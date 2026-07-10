@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# for miracle children: https://taskfile.dev/llms-full.txt
+version: '3'
+
+includes:
+  toolsets: ./toolsets/Taskfile.yml
+  routines: ./routines/Taskfile.yml
+  procedures: ./procedures/Taskfile.yml

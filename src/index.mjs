@@ -1,4 +1,6 @@
 // Package entry point. Applications import from here rather than reaching
+/** biome-ignore-all assist/source/organizeImports: <explanation> */
+
 // into individual files. The four exports form one transaction-protection
 // pipeline; see createWebAuthnCosmosSigner.mjs for the complete flow.
 export { createWebAuthnCosmosSigner } from "./createWebAuthnCosmosSigner.mjs";

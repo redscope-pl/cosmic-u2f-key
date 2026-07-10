@@ -1,43 +1,44 @@
 {
-  "name": "cosmic-u2f-key",
-  "version": "1.0.0",
-  "description": "NPM package for U2F physical key of FIDO2 in Cosmos ",
-  "keywords": [
-    "cosmos",
-    "u2f",
-    "yubikey",
-    "fido"
-  ],
-  "homepage": "https://github.com/redscope-pl/cosmic-u2f-key#readme",
-  "bugs": {
-    "url": "https://github.com/redscope-pl/cosmic-u2f-key/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/redscope-pl/cosmic-u2f-key.git"
-  },
-  "license": "Apache-2.0",
-  "author": "Sett Sarverott",
-  "type": "module",
-  "main": "src/index.mjs",
-  "scripts": {
-    "test": "vitest",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "@interchainjs/cosmos": "^1.13.0",
-    "@passwordless-id/webauthn": "^2.4.0",
-    "chain-registry": "^2.0.232",
-    "cosmiconfig": "^9.0.2",
-    "interchainjs": "^1.13.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.5.3",
-    "@go-task/cli": "^3.50.0",
-    "@starship-ci/cli": "^4.0.0",
-    "dockerode": "^5.0.1",
-    "husky": "^9.1.7",
-    "skills": "^1.5.15",
-    "vitest": "^4.1.10"
-  }
+	"name": "cosmic-u2f-key",
+	"version": "1.0.0",
+	"description": "NPM package for U2F physical key of FIDO2 in Cosmos ",
+	"keywords": [
+		"cosmos",
+		"u2f",
+		"yubikey",
+		"fido"
+	],
+	"homepage": "https://github.com/redscope-pl/cosmic-u2f-key#readme",
+	"bugs": {
+		"url": "https://github.com/redscope-pl/cosmic-u2f-key/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/redscope-pl/cosmic-u2f-key.git"
+	},
+	"license": "Apache-2.0",
+	"author": "Sett Sarverott",
+	"type": "module",
+	"main": "src/index.mjs",
+	"scripts": {
+		"format": "biome check --write",
+		"test": "vitest",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@interchainjs/cosmos": "^1.13.0",
+		"@passwordless-id/webauthn": "^2.4.0",
+		"chain-registry": "^2.0.232",
+		"cosmiconfig": "^9.0.2",
+		"interchainjs": "^1.13.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.3",
+		"@go-task/cli": "^3.50.0",
+		"@starship-ci/cli": "^4.0.0",
+		"dockerode": "^5.0.1",
+		"husky": "^9.1.7",
+		"skills": "^1.5.15",
+		"vitest": "^4.1.10"
+	}
 }

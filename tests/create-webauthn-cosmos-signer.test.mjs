@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { createWebAuthnCosmosSigner } from "../src/index.mjs";
 
-describe("createWebAuthnCosmosSigner", () => {
-  it("obtains and reports proof before delegating the direct signature", async () => {
-    const calls = [];
+	describe("createWebAuthnCosmosSigner", () => {
+	it("obtains and reports proof before delegating the direct signature", async () => {
+		// These fakes model two distinct cryptographic systems: WebAuthn proves
+		// user presence, while the wallet produces the Cosmos secp256k1 signature.
+		const calls = [];
     const signer = {
       getAccounts: () => [{ address: "cosmos1test" }],
       signDirect: async (address, document) => {
@@ -13,7 +15,8 @@ describe("createWebAuthnCosmosSigner", () => {
       },
     };
     const proof = { challenge: "challenge", assertion: { id: "credential" } };
-    const protectedSigner = createWebAuthnCosmosSigner({
+		// Wrap the wallet so its signDirect call is gated by WebAuthn proof.
+		const protectedSigner = createWebAuthnCosmosSigner({
       signer,
       encode: () => Uint8Array.of(1),
       createProof: async (bytes, options) => {
@@ -26,10 +29,13 @@ describe("createWebAuthnCosmosSigner", () => {
     });
 
     const signDoc = { chainId: "cosmoshub-4" };
-    await expect(protectedSigner.signDirect("cosmos1test", signDoc)).resolves.toMatchObject({
+		// Execute the complete wrapper flow for one transaction.
+		await expect(protectedSigner.signDirect("cosmos1test", signDoc)).resolves.toMatchObject({
       signature: { signature: "cosmos-signature" },
     });
-    expect(calls.map(([name]) => name)).toEqual(["proof", "report", "sign"]);
+		// This ordering is the security property: a wallet may sign only after
+		// proof exists and onProof has had a chance to reject it.
+		expect(calls.map(([name]) => name)).toEqual(["proof", "report", "sign"]);
     expect(calls[0][2]).toMatchObject({ credentialId: "AQID", rpId: "wallet.example" });
   });
 });

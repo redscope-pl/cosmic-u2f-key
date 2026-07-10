@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { serializeWebAuthnAssertion } from "../src/index.mjs";
 
-describe("serializeWebAuthnAssertion", () => {
-  it("serializes an assertion into JSON-safe base64url data", () => {
-    const assertion = {
+	describe("serializeWebAuthnAssertion", () => {
+	it("serializes an assertion into JSON-safe base64url data", () => {
+		// Arrange the shape returned by navigator.credentials.get(). A real
+		// authenticator provides ArrayBuffers, not JSON strings.
+		const assertion = {
       id: "credential-id",
       rawId: Uint8Array.from([1, 2, 3]).buffer,
       type: "public-key",
@@ -17,7 +19,8 @@ describe("serializeWebAuthnAssertion", () => {
       getClientExtensionResults: () => ({ credProps: { rk: true } }),
     };
 
-    expect(serializeWebAuthnAssertion(assertion)).toEqual({
+		// Assert every binary value is ready to send to a server as JSON.
+		expect(serializeWebAuthnAssertion(assertion)).toEqual({
       id: "credential-id",
       rawId: "AQID",
       type: "public-key",

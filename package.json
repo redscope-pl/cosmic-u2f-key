@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "author": "Sett Sarverott",
   "type": "module",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "scripts": {
     "test": "vitest",
     "prepare": "husky"

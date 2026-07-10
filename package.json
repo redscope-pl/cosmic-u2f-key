@@ -26,6 +26,7 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
+		"@cosmjs/cosmwasm-stargate": "^0.38.1",
 		"@cosmjs/proto-signing": "^0.39.0",
 		"@cosmjs/stargate": "^0.39.0",
 		"@interchainjs/cosmos": "^1.13.0",

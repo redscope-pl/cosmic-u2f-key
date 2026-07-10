@@ -65,13 +65,13 @@ application uses normal Cosmos signer to make its secp256k1 transaction
 signature and broadcasts only after server authorization
 ```
 
-The current client API binds a proof to supplied message bytes by hashing them
-for the WebAuthn challenge. That is useful transaction binding but **is not
-sufficient replay protection by itself**, because the same bytes yield the
-same challenge. A production integration must incorporate a server-issued,
-single-use random challenge (or a server-provided challenge that commits to a
-transaction digest) and perform server-side verification before signing or
-broadcasting.
+The client API requires an opaque server-issued challenge. Use
+`createTransactionChallenge` on the server to create a random authorization
+record that commits to a transaction digest and expiry, persist it, then send
+only its ID and challenge to the browser. Use `verifyWebAuthnAuthorization`
+with the stored record and an atomic storage `consume` operation before signing
+or broadcasting. The package intentionally leaves database persistence and
+HTTP endpoints to the host application.
 
 ## Module responsibilities
 
@@ -79,8 +79,14 @@ broadcasting.
   direct signing, use the wallet library's canonical protobuf SignDoc bytes.
 - `createWebAuthnProof.mjs` is browser-side: it asks an authenticator for an
   assertion. It cannot establish trust locally.
+- `createTransactionChallenge.mjs` creates the server-persisted, one-time
+  authorization record containing random challenge, transaction digest, and
+  expiry.
 - `serializeWebAuthnAssertion.mjs` turns browser `ArrayBuffer` values into
   JSON-safe base64url text for transport.
+- `verifyWebAuthnAuthorization.mjs` is server-side: it checks a stored record
+  against the exact transaction, delegates WebAuthn cryptographic validation,
+  then requires an atomic single-use consume operation.
 - `createWebAuthnCosmosSigner.mjs` orders the operations: encode → proof →
   application verifier callback → native `signDirect`. The callback must throw
   when server verification fails.
@@ -108,8 +114,7 @@ broadcasting.
 
 ## Next source work
 
-Before production use, add a server-facing verification adapter and an explicit
-server-challenge interface. The adapter should use the registered credential
-public key and relying-party configuration, and tests must cover replay,
-expired challenges, wrong origin/RP ID, invalid signatures, and rejection
-before the native wallet signer runs.
+Before production use, add persistent storage and HTTP endpoints around the
+server challenge/verification functions. Tests must cover replay, expired
+challenges, wrong origin/RP ID, invalid signatures, counter regressions, and
+rejection before the native wallet signer runs.

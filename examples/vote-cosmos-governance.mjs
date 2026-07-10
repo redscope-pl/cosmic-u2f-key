@@ -11,11 +11,18 @@ export async function voteOnCosmosProposal({
   voter,
   proposalId,
   option = VoteOption.VOTE_OPTION_YES,
-  credentialId,
-  rpId,
-  verifyProof,
+	credentialId,
+	rpId,
+	requestAuthorization,
+	verifyProof,
 }) {
-  const authorizedSigner = withWebAuthnApproval({ signer, credentialId, rpId, verifyProof });
+	const authorizedSigner = withWebAuthnApproval({
+		signer,
+		credentialId,
+		rpId,
+		requestAuthorization,
+		verifyProof,
+	});
   const client = await SigningStargateClient.connectWithSigner(rpcEndpoint, authorizedSigner);
   try {
     return await client.signAndBroadcast(voter, [{

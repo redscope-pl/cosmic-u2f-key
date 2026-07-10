@@ -13,11 +13,18 @@ export async function sendCosmosTokens({
   toAddress,
   amount,
   denom,
-  credentialId,
-  rpId,
-  verifyProof,
+	credentialId,
+	rpId,
+	requestAuthorization,
+	verifyProof,
 }) {
-  const authorizedSigner = withWebAuthnApproval({ signer, credentialId, rpId, verifyProof });
+	const authorizedSigner = withWebAuthnApproval({
+		signer,
+		credentialId,
+		rpId,
+		requestAuthorization,
+		verifyProof,
+	});
   const client = await SigningStargateClient.connectWithSigner(rpcEndpoint, authorizedSigner);
   try {
     return await client.sendTokens(fromAddress, toAddress, [coin(amount, denom)], "auto");

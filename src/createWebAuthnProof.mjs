@@ -1,15 +1,14 @@
 import { base64Url } from "./internal/base64Url.mjs";
 import { fromBase64Url } from "./internal/fromBase64Url.mjs";
-import { sha256 } from "./internal/sha256.mjs";
 import { serializeWebAuthnAssertion } from "./serializeWebAuthnAssertion.mjs";
 
 /**
  * Step 2 — ask the selected WebAuthn authenticator (such as a YubiKey) to
  * approve the transaction bytes.
  *
- * 1. Hash `message` to a fixed 32-byte challenge. The challenge is recorded
- *    by the browser in clientDataJSON, so the returned assertion is tied to
- *    this particular transaction intent.
+ * 1. Receive the opaque, random, one-time challenge issued by the server for
+ *    this transaction. The server record binds it to the transaction digest.
+ *    The browser must not derive this from transaction order or wallet data.
  * 2. Ask the browser for an assertion, optionally restricting the prompt to
  *    the registered `credentialId` and relying-party `rpId`.
  * 3. Serialize the browser response so it can be persisted or sent to a
@@ -21,6 +20,7 @@ import { serializeWebAuthnAssertion } from "./serializeWebAuthnAssertion.mjs";
 export async function createWebAuthnProof(
 	message,
 	{
+		challenge,
 		credentialId,
 		rpId,
 		timeout = 60_000,
@@ -31,13 +31,18 @@ export async function createWebAuthnProof(
 ) {
 	if (!credentials?.get)
 		throw new Error("WebAuthn is unavailable in this environment");
-	// A digest prevents variable-size transaction data from being used directly
-	// as a WebAuthn challenge and gives the verifier a stable value to compare.
-	const challenge = await sha256(message);
+	// `message` stays in the API to make callers keep the proof next to the
+	// bytes that the server challenge record commits to. The opaque challenge is
+	// deliberately not derived here: deterministic challenges are replayable.
+	void message;
+	if (typeof challenge !== "string") {
+		throw new TypeError("challenge must be the server-issued base64url challenge string");
+	}
+	const challengeBytes = fromBase64Url(challenge, "challenge");
 	const assertion = await credentials.get({
 		publicKey: {
 			// The browser will include this challenge in the signed assertion data.
-			challenge,
+			challenge: challengeBytes,
 			rpId,
 			timeout,
 			userVerification,
@@ -50,7 +55,7 @@ export async function createWebAuthnProof(
 	if (!assertion) throw new Error("WebAuthn assertion was cancelled");
 	// Return only JSON-safe data. The caller must have a server verify it.
 	return {
-		challenge: base64Url(challenge),
+		challenge: base64Url(challengeBytes),
 		assertion: serializeWebAuthnAssertion(assertion),
 	};
 }

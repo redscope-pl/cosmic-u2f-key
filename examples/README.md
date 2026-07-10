@@ -7,8 +7,9 @@ storage strategy before using them.
 
 WebAuthn authorizes a transaction; it does not replace the chain's native
 signature. Each example follows this sequence: prepare exact transaction
-bytes, request WebAuthn approval, verify that proof on your server, then use
-the chain wallet's normal signing method.
+bytes, ask the server to create and persist a one-time authorization record,
+request WebAuthn approval with its random challenge, verify and consume that
+record on the server, then use the chain wallet's normal signing method.
 
 - `create-osmosis-wallet.mjs`, `create-cosmos-wallet.mjs`, and
   `create-cosmoshub-wallet.mjs` create new Cosmos-compatible wallets.
@@ -20,5 +21,9 @@ the chain wallet's normal signing method.
   same approval pattern around non-Cosmos wallets.
 
 Never hard-code mnemonics, private keys, credential IDs, or production RPC
-credentials. The `verifyProof` callback must reject when server verification
-fails; otherwise the code will proceed to native wallet signing.
+credentials. In the transfer and vote examples, `requestAuthorization` calls
+your server with the exact transaction bytes; it returns `{ authorizationId,
+challenge }` from a newly stored `createTransactionChallenge` record.
+`verifyProof` must verify the WebAuthn assertion, check the matching transaction
+digest and expiry, and atomically consume `authorizationId`. It must reject on
+any failure; otherwise the code will proceed to native wallet signing.

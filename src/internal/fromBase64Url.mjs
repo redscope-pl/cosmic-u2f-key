@@ -1,6 +1,6 @@
-export function fromBase64Url(value) {
+export function fromBase64Url(value, name = "credentialId") {
 	if (typeof value !== "string" || !/^[A-Za-z0-9_-]+$/.test(value)) {
-		throw new TypeError("credentialId must be a non-empty base64url string");
+		throw new TypeError(`${name} must be a non-empty base64url string`);
 	}
 	const padded =
 		value.replaceAll("-", "+").replaceAll("_", "/") +

@@ -26,10 +26,15 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
+		"@cosmjs/proto-signing": "^0.39.0",
+		"@cosmjs/stargate": "^0.39.0",
 		"@interchainjs/cosmos": "^1.13.0",
 		"@passwordless-id/webauthn": "^2.4.0",
+		"@solana/web3.js": "^1.98.4",
 		"chain-registry": "^2.0.232",
 		"cosmiconfig": "^9.0.2",
+		"cosmjs-types": "^0.11.0",
+		"ethers": "^6.17.0",
 		"interchainjs": "^1.13.0"
 	},
 	"devDependencies": {

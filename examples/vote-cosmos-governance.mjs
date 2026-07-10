@@ -1,5 +1,6 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
-import { MsgVote, VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import { VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
+import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 
 import { withWebAuthnApproval } from "./shared/webauthn.mjs";
 

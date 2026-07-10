@@ -1,4 +1,4 @@
-import { serializeSignDoc } from "@cosmjs/proto-signing";
+import { makeSignBytes } from "@cosmjs/proto-signing";
 
 import { createWebAuthnProof } from "../src/index.mjs";
 
@@ -7,5 +7,5 @@ import { createWebAuthnProof } from "../src/index.mjs";
  * The verifier should reconstruct these protobuf bytes before accepting proof.
  */
 export function approveCosmosSignDoc(signDoc, webauthnOptions) {
-  return createWebAuthnProof(serializeSignDoc(signDoc), webauthnOptions);
+	return createWebAuthnProof(makeSignBytes(signDoc), webauthnOptions);
 }

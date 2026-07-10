@@ -1,0 +1,21 @@
+
+
+chains:
+  - id: 1337
+    name: ethereum
+    numValidators: 1
+    ports:
+      rest: 8545
+      rpc: 8551
+    image: ghcr.io/hyperweb-io/starship/ethereum/client-go:latest
+    config:
+      beacon:
+        enabled: true
+        image: "ghcr.io/hyperweb-io/starship/prysm/beacon-chain:v5.2.0"
+        numValidator: 1
+      validator:
+        enabled: true
+        image: "ghcr.io/hyperweb-io/starship/prysm/validator:v5.2.0"
+        numValidator: 1
+      prysmctl:
+        image: "ghcr.io/hyperweb-io/starship/prysm/cmd/prysmctl:v5.2.0"

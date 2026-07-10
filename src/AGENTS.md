@@ -87,6 +87,15 @@ HTTP endpoints to the host application.
 - `verifyWebAuthnAuthorization.mjs` is server-side: it checks a stored record
   against the exact transaction, delegates WebAuthn cryptographic validation,
   then requires an atomic single-use consume operation.
+- `storage/` provides in-memory development implementations for credential and
+  authorization records. Production deployments must replace them with shared,
+  durable storage that supports atomic compare-and-consume semantics.
+- `http/createAuthorizationHttpHandler.mjs` exposes the issue and verify
+  protocol as portable Fetch-style endpoints; it deliberately has no framework
+  or database dependency.
+- `cosmwasm/createCosmWasmPolicyProvider.mjs` reads application policy from a
+  contract. It is advisory until a contract-controlled vault/account enforces
+  a nonce-bound verifier authorization on-chain.
 - `createWebAuthnCosmosSigner.mjs` orders the operations: encode → proof →
   application verifier callback → native `signDirect`. The callback must throw
   when server verification fails.
